@@ -76,12 +76,15 @@ class DynamicVersionBuildHook:
         version_source = context.root / path
         with open(version_source, encoding="utf-8") as fp:
             match = re.search(
-                r"^__version__\s*=\s*[\"'](.+?)[\"']\s*(?:#.*)?$", fp.read(), re.M
+                r"^__version__\s*(?::\s* str)?\s*=\s*[\"'](.+?)[\"']\s*(?:#.*)?$",
+                fp.read(),
+                re.M,
             )
         if not match:
             raise ConfigError(
                 f"Couldn't find version in file {version_source!r}, "
-                "it should appear as `__version__ = 'a.b.c'`.",
+                "it should appear as `__version__ = 'a.b.c'` or "
+                "`__version__: str = 'a.b.c'`.",
             )
         return match.group(1)
 
